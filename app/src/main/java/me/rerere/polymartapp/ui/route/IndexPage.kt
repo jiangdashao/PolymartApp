@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -29,8 +30,10 @@ import kotlinx.coroutines.launch
 import me.rerere.polymartapp.R
 import me.rerere.polymartapp.ui.component.Avatar
 import me.rerere.polymartapp.ui.theme.POLYMART_COLOR_DARKER
+import me.rerere.polymartapp.util.currentVisualPage
 import me.rerere.polymartapp.util.unread
 
+@ExperimentalMaterialApi
 @ExperimentalPagerApi
 @Composable
 fun IndexPage(navController: NavController) {
@@ -139,7 +142,7 @@ fun BottomBar(pagerState: PagerState){
     ) {
         // Resource
         BottomNavigationItem(
-            selected = pagerState.currentPage == 0,
+            selected = pagerState.currentVisualPage == 0,
             onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
             icon = {
                 Icon(painterResource(R.drawable.resource), null)
@@ -150,7 +153,7 @@ fun BottomBar(pagerState: PagerState){
         )
         // Servers
         BottomNavigationItem(
-            selected = pagerState.currentPage == 1,
+            selected = pagerState.currentVisualPage == 1,
             onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
             icon = {
                 Icon(painterResource(R.drawable.servers), null)
@@ -161,7 +164,7 @@ fun BottomBar(pagerState: PagerState){
         )
         // Servers
         BottomNavigationItem(
-            selected = pagerState.currentPage == 2,
+            selected = pagerState.currentVisualPage == 2,
             onClick = { coroutineScope.launch { pagerState.animateScrollToPage(2) } },
             icon = {
                 Icon(painterResource(R.drawable.forum), null)
@@ -173,6 +176,7 @@ fun BottomBar(pagerState: PagerState){
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun IndexDrawer(navController: NavController) {
     // Profile
@@ -213,5 +217,47 @@ fun IndexDrawer(navController: NavController) {
                 }
             }
         }
+    }
+
+    // Navigation Items
+    Column(Modifier.fillMaxSize()) {
+        // My Resource
+        ListItem(
+            modifier = Modifier.clickable {
+                navController.navigate("my_resource")
+            },
+            icon = {
+                Icon(painterResource(R.drawable.my_resource), "My Resources")
+            },
+            text = {
+                Text("My Resources")
+            }
+        )
+
+        // WishList
+        ListItem(
+            modifier = Modifier.clickable {
+                navController.navigate("wishlist")
+            },
+            icon = {
+                Icon(painterResource(R.drawable.wishlist), "Wishlist")
+            },
+            text = {
+                Text("Wishlist")
+            }
+        )
+
+        // About
+        ListItem(
+            modifier = Modifier.clickable {
+                navController.navigate("about")
+            },
+            icon = {
+                Icon(Icons.Default.Info, "About")
+            },
+            text = {
+                Text("About")
+            }
+        )
     }
 }

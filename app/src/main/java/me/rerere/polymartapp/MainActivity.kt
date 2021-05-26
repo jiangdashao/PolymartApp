@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +21,7 @@ import me.rerere.polymartapp.ui.route.*
 import me.rerere.polymartapp.ui.theme.PolymartAppTheme
 
 class MainActivity : ComponentActivity() {
+    @ExperimentalMaterialApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,10 @@ class MainActivity : ComponentActivity() {
 
                         composable("message"){
                             MessagePage(navController)
+                        }
+
+                        composable("about"){
+                            AboutPage(navController)
                         }
                     }
                 }

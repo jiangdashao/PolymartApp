@@ -27,9 +27,11 @@ import com.google.accompanist.insets.statusBarsPadding
 fun SearchPage(navController: NavController) {
     Scaffold(
         topBar = {
-            TopBar(navController = navController){
-
-            }
+            TopBar(
+                navController = navController,
+                onSearch = {},
+                onBack = {navController.popBackStack()}
+            )
         }
     ) {
 
@@ -37,11 +39,11 @@ fun SearchPage(navController: NavController) {
 }
 
 @Composable
-fun TopBar(navController: NavController, onSearch: (content: String) -> Unit) {
+fun TopBar(navController: NavController, onSearch: (content: String) -> Unit, onBack: ()->Unit) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
         navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = onBack ) {
                 Icon(Icons.Default.ArrowBack, "Back")
             }
         },
