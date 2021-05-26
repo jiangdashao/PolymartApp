@@ -1,38 +1,42 @@
 package me.rerere.polymartapp.ui.route
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import me.rerere.polymartapp.R
 import me.rerere.polymartapp.ui.component.Avatar
 import me.rerere.polymartapp.ui.theme.POLYMART_COLOR_DARKER
 import me.rerere.polymartapp.util.unread
 
+@ExperimentalPagerApi
 @Composable
 fun IndexPage(navController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(pageCount = 3)
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -45,19 +49,33 @@ fun IndexPage(navController: NavController) {
                 },
                 onClickSearch = {
                     navController.navigate("search")
+                },
+                onClickMessage = {
+                    navController.navigate("message")
                 }
             )
         },
         drawerContent = {
-            IndexDrawer()
+            IndexDrawer(navController)
+        },
+        bottomBar = {
+            BottomBar(pagerState)
         }
     ) {
+        Content(pagerState)
+    }
+}
+
+@ExperimentalPagerApi
+@Composable
+fun Content(pagerState: PagerState){
+    HorizontalPager(modifier = Modifier.fillMaxWidth(), state = pagerState) {
 
     }
 }
 
 @Composable
-fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit) {
+fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit, onClickMessage: ()->Unit) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
         title = {
@@ -99,11 +117,12 @@ fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit) {
                 }
                 IconButton(onClick = {
                     show = !show
+                    onClickMessage()
                 }) {
                     Icon(
                         modifier = Modifier.unread(show),
                         imageVector = Icons.Default.Message,
-                        contentDescription = "Notifications"
+                        contentDescription = "Messages"
                     )
                 }
             }
@@ -111,8 +130,51 @@ fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit) {
     )
 }
 
+@ExperimentalPagerApi
 @Composable
-fun IndexDrawer() {
+fun BottomBar(pagerState: PagerState){
+    val coroutineScope = rememberCoroutineScope()
+    BottomNavigation(
+        modifier = Modifier.navigationBarsPadding()
+    ) {
+        // Resource
+        BottomNavigationItem(
+            selected = pagerState.currentPage == 0,
+            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
+            icon = {
+                Icon(painterResource(R.drawable.resource), null)
+            },
+            label = {
+                Text(text = "Resource")
+            }
+        )
+        // Servers
+        BottomNavigationItem(
+            selected = pagerState.currentPage == 1,
+            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
+            icon = {
+                Icon(painterResource(R.drawable.servers), null)
+            },
+            label = {
+                Text(text = "Server")
+            }
+        )
+        // Servers
+        BottomNavigationItem(
+            selected = pagerState.currentPage == 2,
+            onClick = { coroutineScope.launch { pagerState.animateScrollToPage(2) } },
+            icon = {
+                Icon(painterResource(R.drawable.forum), null)
+            },
+            label = {
+                Text(text = "Forum")
+            }
+        )
+    }
+}
+
+@Composable
+fun IndexDrawer(navController: NavController) {
     // Profile
     Box(
         modifier = Modifier
@@ -122,7 +184,9 @@ fun IndexDrawer() {
             .background(MaterialTheme.colors.primarySurface),
         contentAlignment = Alignment.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+            navController.navigate("login")
+        }) {
             // Avatar
             Avatar(
                 modifier = Modifier.size(100.dp),

@@ -14,12 +14,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import me.rerere.polymartapp.ui.route.IndexPage
-import me.rerere.polymartapp.ui.route.SplashPage
+import me.rerere.polymartapp.ui.route.*
 import me.rerere.polymartapp.ui.theme.PolymartAppTheme
 
 class MainActivity : ComponentActivity() {
+    @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,7 +51,15 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("search"){
+                            SearchPage(navController)
+                        }
 
+                        composable("login"){
+                            LoginPage(navController)
+                        }
+
+                        composable("message"){
+                            MessagePage(navController)
                         }
                     }
                 }
