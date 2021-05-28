@@ -19,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -29,17 +31,21 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import me.rerere.polymartapp.R
 import me.rerere.polymartapp.ui.component.Avatar
+import me.rerere.polymartapp.ui.route.index.ServerListComp
 import me.rerere.polymartapp.ui.theme.POLYMART_COLOR_DARKER
+import me.rerere.polymartapp.ui.viewmodel.IndexViewModel
+import me.rerere.polymartapp.ui.viewmodel.MessageViewModel
 import me.rerere.polymartapp.util.currentVisualPage
 import me.rerere.polymartapp.util.unread
 
 @ExperimentalMaterialApi
 @ExperimentalPagerApi
 @Composable
-fun IndexPage(navController: NavController) {
+fun IndexPage(navController: NavController, indexViewModel: IndexViewModel = hiltViewModel()) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = 3)
+    val vm = viewModel<MessageViewModel>()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -65,15 +71,25 @@ fun IndexPage(navController: NavController) {
             BottomBar(pagerState)
         }
     ) {
-        Content(pagerState)
+        Content(it, pagerState, indexViewModel)
     }
 }
 
 @ExperimentalPagerApi
 @Composable
-fun Content(pagerState: PagerState){
-    HorizontalPager(modifier = Modifier.fillMaxWidth(), state = pagerState) {
-
+fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexViewModel: IndexViewModel){
+    HorizontalPager(modifier = Modifier
+        .fillMaxWidth()
+        .padding(paddingValues), state = pagerState) {page->
+        when(page){
+            0 -> {
+                Text(text = "?")
+            }
+            1 -> {
+                ServerListComp(indexViewModel)
+            }
+            2 -> {}
+        }
     }
 }
 

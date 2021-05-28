@@ -18,13 +18,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
+import com.vanpra.composematerialdialogs.*
 import me.rerere.polymartapp.R
+import me.rerere.polymartapp.ui.viewmodel.LoginViewModel
 
 @Composable
-fun LoginPage(navController: NavController) {
+fun LoginPage(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,44 +53,70 @@ fun LoginPage(navController: NavController) {
                 .navigationBarsWithImePadding(),
             contentAlignment = Alignment.Center
         ) {
-            LoginForm()
+            LoginForm(loginViewModel)
         }
     }
 }
 
 @Composable
-fun LoginForm() {
-    var username by remember {
-        mutableStateOf("")
+fun LoginForm(loginViewModel: LoginViewModel) {
+    // Progress Dialog
+    val dialog = remember {
+        MaterialDialog()
     }
-    var password by remember {
-        mutableStateOf("")
+    dialog.build {
+        iconTitle(text = "Trying to login", icon = {
+            CircularProgressIndicator(modifier = Modifier.size(30.dp))
+        })
+        message("Please wait for a while...")
     }
+    // Failed Dialog
+    val failedDialog = remember {
+        MaterialDialog()
+    }
+    failedDialog.build {
+        title("Failed to login")
+        message("Please check your account and password!")
+        buttons {
+            button("Ok"){
+                failedDialog.hide()
+            }
+        }
+    }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         // LOGO
-        Image(modifier = Modifier.size(100.dp), painter = painterResource(R.drawable.logo), contentDescription = "LOGO")
+        Image(
+            modifier = Modifier.size(100.dp),
+            painter = painterResource(R.drawable.logo),
+            contentDescription = "LOGO"
+        )
 
         // Space
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(25.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(25.dp)
+        )
 
         // Title
         Text(text = "Login into Polymart", fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
         // Space
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(25.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(25.dp)
+        )
 
         // Username
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            value = username,
+            value = loginViewModel.username,
             onValueChange = {
-                username = it
+                loginViewModel.username = it
             },
             label = {
                 Text(text = "Username or Email")
@@ -98,9 +129,9 @@ fun LoginForm() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            value = password,
+            value = loginViewModel.password,
             onValueChange = {
-                password = it
+                loginViewModel.password = it
             },
             visualTransformation = PasswordVisualTransformation(),
             label = {
@@ -114,31 +145,54 @@ fun LoginForm() {
         )
 
         // Spacer
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+        )
 
         // Login Button
         Button(modifier = Modifier
             .fillMaxWidth()
             .height(45.dp)
-            .padding(horizontal = 16.dp), onClick = { /*TODO*/ }) {
+            .padding(horizontal = 16.dp), onClick = {
+            // show progress dialog
+            dialog.show()
+            loginViewModel.login {
+                // hide progress dialog
+                dialog.hide()
+                // handle result
+                if(it){
+                    // Popback
+                    // TODO
+                }else{
+                    failedDialog.show()
+                }
+            }
+        }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Login, "login icon")
-                Text(modifier = Modifier.padding(horizontal = 16.dp), text = "Login", fontWeight = FontWeight.Bold)
+                Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    text = "Login",
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
 
         // Spacer
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(10.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+        )
 
         // Register / Forgot Password
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)) {
+                .padding(horizontal = 16.dp)
+        ) {
             Button(modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
@@ -155,13 +209,21 @@ fun LoginForm() {
         }
 
         // Spacer
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(30.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(30.dp)
+        )
 
         // Note
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-            Text(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), text = "Two-step verification login is not supported temporarily", textAlign = TextAlign.Center)
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                text = "Two-step verification login is not supported temporarily",
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

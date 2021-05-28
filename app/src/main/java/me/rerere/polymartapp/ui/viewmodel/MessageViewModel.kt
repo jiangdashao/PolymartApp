@@ -1,4 +1,8 @@
 package me.rerere.polymartapp.ui.viewmodel
 
-class MessageViewModel {
+import androidx.lifecycle.ViewModel
+import javax.inject.Inject
+
+class MessageViewModel @Inject constructor(): ViewModel(){
+
 }

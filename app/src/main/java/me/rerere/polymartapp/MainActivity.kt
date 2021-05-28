@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.primarySurface
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
@@ -17,9 +16,11 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 import me.rerere.polymartapp.ui.route.*
 import me.rerere.polymartapp.ui.theme.PolymartAppTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @ExperimentalMaterialApi
     @ExperimentalPagerApi
