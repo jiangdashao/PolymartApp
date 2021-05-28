@@ -59,7 +59,7 @@ fun LoginPage(navController: NavController, loginViewModel: LoginViewModel = hil
 }
 
 @Composable
-fun LoginForm(loginViewModel: LoginViewModel) {
+private fun LoginForm(loginViewModel: LoginViewModel) {
     // Progress Dialog
     val dialog = remember {
         MaterialDialog()

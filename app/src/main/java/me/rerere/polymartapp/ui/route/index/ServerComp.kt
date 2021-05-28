@@ -119,7 +119,7 @@ fun ServerListComp(indexViewModel: IndexViewModel) {
 }
 
 @Composable
-fun ServerCard(server: Server) {
+private fun ServerCard(server: Server) {
     val clipboardManager =
         PolymartApp.instance.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
 

@@ -77,7 +77,7 @@ fun IndexPage(navController: NavController, indexViewModel: IndexViewModel = hil
 
 @ExperimentalPagerApi
 @Composable
-fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexViewModel: IndexViewModel){
+private fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexViewModel: IndexViewModel){
     HorizontalPager(modifier = Modifier
         .fillMaxWidth()
         .padding(paddingValues), state = pagerState) {page->
@@ -94,7 +94,7 @@ fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexViewModel
 }
 
 @Composable
-fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit, onClickMessage: ()->Unit) {
+private fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit, onClickMessage: ()->Unit) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
         title = {
@@ -151,7 +151,7 @@ fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit, onClick
 
 @ExperimentalPagerApi
 @Composable
-fun BottomBar(pagerState: PagerState){
+private fun BottomBar(pagerState: PagerState){
     val coroutineScope = rememberCoroutineScope()
     BottomNavigation(
         modifier = Modifier.navigationBarsPadding()
@@ -194,7 +194,7 @@ fun BottomBar(pagerState: PagerState){
 
 @ExperimentalMaterialApi
 @Composable
-fun IndexDrawer(navController: NavController) {
+private fun IndexDrawer(navController: NavController) {
     // Profile
     Box(
         modifier = Modifier

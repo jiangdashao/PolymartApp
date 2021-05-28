@@ -39,7 +39,7 @@ fun SearchPage(navController: NavController) {
 }
 
 @Composable
-fun TopBar(navController: NavController, onSearch: (content: String) -> Unit, onBack: ()->Unit) {
+private fun TopBar(navController: NavController, onSearch: (content: String) -> Unit, onBack: ()->Unit) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
         navigationIcon = {
@@ -54,7 +54,7 @@ fun TopBar(navController: NavController, onSearch: (content: String) -> Unit, on
 }
 
 @Composable
-fun SearchBar(onSearch: (content: String) -> Unit) {
+private fun SearchBar(onSearch: (content: String) -> Unit) {
     var content by remember {
         mutableStateOf("")
     }
