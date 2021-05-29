@@ -9,11 +9,28 @@ class CookieJarHelper : CookieJar {
     var cookies: List<Cookie> = emptyList()
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
-        return emptyList()
+        return if(url.isHttps && url.host == "polymart.org") {
+            cookies
+        } else emptyList()
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         this.cookies = cookies
+    }
+
+    fun setCookie(cookie: me.rerere.polymartapp.model.Cookie) {
+        cookies = listOf(
+            Cookie.Builder()
+                .name("session_token_id")
+                .value(cookie.token_id ?: "")
+                .domain("polymart.org")
+                .build(),
+            Cookie.Builder()
+                .name("session_token_value")
+                .value(cookie.token_value ?: "")
+                .domain("polymart.org")
+                .build()
+        )
     }
 
     fun containsSessionCookie(): Boolean {

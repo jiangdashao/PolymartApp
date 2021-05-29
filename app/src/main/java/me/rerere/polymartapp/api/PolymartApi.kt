@@ -13,6 +13,17 @@ interface PolymartApi {
     suspend fun login(username: String, password: String): ApiResult<Cookie>
 
     /**
+     * Check if it's a valid cookie
+     */
+
+    suspend fun isValidCookie(cookie: Cookie): Boolean
+
+    /**
+     * Get user information
+     */
+    suspend fun getUserInfo(cookie: Cookie): ApiResult<UserInfo>
+
+    /**
      * Get server list:
      * https://polymart.org/servers
      */

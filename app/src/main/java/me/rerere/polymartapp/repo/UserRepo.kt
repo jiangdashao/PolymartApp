@@ -9,4 +9,8 @@ class UserRepo @Inject constructor(
     private val polymartApi: PolymartApi
 ) {
     suspend fun login(username: String, password: String): ApiResult<Cookie> = polymartApi.login(username, password)
+
+    suspend fun isValid(cookie: Cookie) = polymartApi.isValidCookie(cookie)
+
+    suspend fun getUserInfo(cookie: Cookie) = polymartApi.getUserInfo(cookie)
 }

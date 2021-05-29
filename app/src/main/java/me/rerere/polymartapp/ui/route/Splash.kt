@@ -17,17 +17,20 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navArgument
 import kotlinx.coroutines.delay
 import me.rerere.polymartapp.ui.theme.POLYMART_COLOR_DARKER
+import me.rerere.polymartapp.ui.viewmodel.SplashViewModel
 
 @Composable
-fun SplashPage(navController: NavController) {
-
+fun SplashPage(navController: NavController, splashViewModel: SplashViewModel = hiltViewModel()) {
     // delay 2 seconds, then go to index route
     LaunchedEffect(Unit) {
-        delay(500)
+        splashViewModel.checkCookie()
+
+        delay(1500)
         navController.navigate("index"){
             popUpTo("splash"){
                 inclusive = true

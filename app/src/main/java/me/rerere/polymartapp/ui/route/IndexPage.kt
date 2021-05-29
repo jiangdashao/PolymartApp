@@ -30,7 +30,10 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import me.rerere.polymartapp.R
+import me.rerere.polymartapp.model.NOT_LOGIN
+import me.rerere.polymartapp.model.UserInfo
 import me.rerere.polymartapp.ui.component.Avatar
+import me.rerere.polymartapp.ui.route.index.ForumComp
 import me.rerere.polymartapp.ui.route.index.ServerListComp
 import me.rerere.polymartapp.ui.theme.POLYMART_COLOR_DARKER
 import me.rerere.polymartapp.ui.viewmodel.IndexViewModel
@@ -51,6 +54,7 @@ fun IndexPage(navController: NavController, indexViewModel: IndexViewModel = hil
         scaffoldState = scaffoldState,
         topBar = {
             TopBar(
+                profilePic = indexViewModel.userInfo.profilePic,
                 onClickNavigationIcon = {
                     coroutineScope.launch {
                         scaffoldState.drawerState.open()
@@ -65,7 +69,7 @@ fun IndexPage(navController: NavController, indexViewModel: IndexViewModel = hil
             )
         },
         drawerContent = {
-            IndexDrawer(navController)
+            IndexDrawer(navController, indexViewModel.userInfo)
         },
         bottomBar = {
             BottomBar(pagerState)
@@ -83,18 +87,22 @@ private fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexV
         .padding(paddingValues), state = pagerState) {page->
         when(page){
             0 -> {
-                Text(text = "?")
+                Box(modifier = Modifier.fillMaxSize()){
+                    Text(text = "Haha")
+                }
             }
             1 -> {
                 ServerListComp(indexViewModel)
             }
-            2 -> {}
+            2 -> {
+                ForumComp(indexViewModel)
+            }
         }
     }
 }
 
 @Composable
-private fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit, onClickMessage: ()->Unit) {
+private fun TopBar(profilePic: String, onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit, onClickMessage: ()->Unit) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
         title = {
@@ -119,7 +127,7 @@ private fun TopBar(onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit,
             }) {
                 Avatar(
                     modifier = Modifier.size(30.dp),
-                    avatarUrl = "https://s3.amazonaws.com/polymart.user.profilepictures/small/275"
+                    avatarUrl = profilePic
                 )
             }
         },
@@ -194,23 +202,27 @@ private fun BottomBar(pagerState: PagerState){
 
 @ExperimentalMaterialApi
 @Composable
-private fun IndexDrawer(navController: NavController) {
+private fun IndexDrawer(navController: NavController, userInfo: UserInfo) {
     // Profile
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
             .statusBarsPadding()
-            .background(MaterialTheme.colors.primarySurface),
+            .background(MaterialTheme.colors.primaryVariant),
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-            navController.navigate("login")
+            if(userInfo == NOT_LOGIN) {
+                navController.navigate("login")
+            }else {
+                navController.navigate("user")
+            }
         }) {
             // Avatar
             Avatar(
                 modifier = Modifier.size(100.dp),
-                avatarUrl = "https://s3.amazonaws.com/polymart.user.profilepictures/small/275"
+                avatarUrl = userInfo.profilePic
             )
 
             Column(
@@ -221,15 +233,15 @@ private fun IndexDrawer(navController: NavController) {
             ) {
                 // Nickname
                 Text(
-                    text = "RE_OVO",
+                    text = userInfo.nickname,
                     style = MaterialTheme.typography.h5,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
 
                 // Biography
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = "Biography Biography Biography Biography", color = Color.White)
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+                    Text(text = userInfo.biography)
                 }
             }
         }

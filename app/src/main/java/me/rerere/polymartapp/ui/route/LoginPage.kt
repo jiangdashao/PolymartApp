@@ -53,13 +53,13 @@ fun LoginPage(navController: NavController, loginViewModel: LoginViewModel = hil
                 .navigationBarsWithImePadding(),
             contentAlignment = Alignment.Center
         ) {
-            LoginForm(loginViewModel)
+            LoginForm(loginViewModel, navController)
         }
     }
 }
 
 @Composable
-private fun LoginForm(loginViewModel: LoginViewModel) {
+private fun LoginForm(loginViewModel: LoginViewModel, navController: NavController) {
     // Progress Dialog
     val dialog = remember {
         MaterialDialog()
@@ -78,7 +78,7 @@ private fun LoginForm(loginViewModel: LoginViewModel) {
         title("Failed to login")
         message("Please check your account and password!")
         buttons {
-            button("Ok"){
+            button("Ok") {
                 failedDialog.hide()
             }
         }
@@ -162,10 +162,9 @@ private fun LoginForm(loginViewModel: LoginViewModel) {
                 // hide progress dialog
                 dialog.hide()
                 // handle result
-                if(it){
-                    // Popback
-                    // TODO
-                }else{
+                if (it) {
+                    navController.popBackStack()
+                } else {
                     failedDialog.show()
                 }
             }
