@@ -13,6 +13,7 @@ import me.rerere.polymartapp.model.server.ServerSort
 import me.rerere.polymartapp.model.user.Cookie
 import me.rerere.polymartapp.model.user.UserInfo
 import me.rerere.polymartapp.util.CookieJarHelper
+import me.rerere.polymartapp.util.await
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -44,7 +45,7 @@ class PolymartApiImpl(
                     )
                     .build()
 
-                val response = httpClient.newCall(request).execute()
+                val response = httpClient.newCall(request).await()
                 // return
                 if (response.code == 200 && cookie.containsSessionCookie()) ApiResult.success(cookie.toCookie()) else ApiResult.failed()
             } catch (exception: Exception) {
@@ -60,7 +61,7 @@ class PolymartApiImpl(
                 .url(POLYMART_BASEURL, "account")
                 .build()
 
-            httpClient.newCall(request).execute()
+            httpClient.newCall(request).await()
 
             // If it's redirect to the login page, so the cookie expired or invalid
             !request.url.toString().contains("login")
@@ -78,7 +79,7 @@ class PolymartApiImpl(
                     .url(POLYMART_BASEURL, "account")
                     .get()
                     .build()
-                val response = httpClient.newCall(accountRequest).execute()
+                val response = httpClient.newCall(accountRequest).await()
                 val document = Jsoup.parse(response.body?.string() ?: error("empty body: response"))
                 val body: Element = document.body()
                 val link = body.getElementsByAttributeValue("title", "You").attr("href")
@@ -88,7 +89,7 @@ class PolymartApiImpl(
                     .get()
                     .build()
 
-                val infoResponse = httpClient.newCall(infoRequest).execute()
+                val infoResponse = httpClient.newCall(infoRequest).await()
                 val infoBody =
                     Jsoup.parse(infoResponse.body?.string() ?: error("empty body: infoResponse"))
                         .body()
@@ -118,7 +119,7 @@ class PolymartApiImpl(
                 .url("https://polymart.org/resources")
                 .get()
                 .build()
-            val authResponse = httpClient.newCall(authRequest).execute()
+            val authResponse = httpClient.newCall(authRequest).await()
             val mainContent = Jsoup.parse(authResponse.body?.string() ?: error("empty body"))
                 .getElementById("main-content")
             val jsPart = mainContent.child(0).child(0).html()
@@ -132,7 +133,7 @@ class PolymartApiImpl(
                 .url(requestLink)
                 .post(resourceSearchParam.toFormBody())
                 .build()
-            val response = httpClient.newCall(request).execute()
+            val response = httpClient.newCall(request).await()
             val responseObj =
                 gson.fromJson(response.body?.string() ?: "", SearchResponse::class.java)
 
@@ -173,7 +174,7 @@ class PolymartApiImpl(
                     .get()
                     .build()
 
-                val response = httpClient.newCall(request).execute()
+                val response = httpClient.newCall(request).await()
                 val content = response.body?.string() ?: ""
 
                 if (content.isEmpty()) {

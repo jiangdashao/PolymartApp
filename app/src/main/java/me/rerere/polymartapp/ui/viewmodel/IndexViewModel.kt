@@ -5,10 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import me.rerere.polymartapp.model.resource.Resource
-import me.rerere.polymartapp.model.resource.searchResourceParams
+import me.rerere.polymartapp.api.ResourceListSource
 import me.rerere.polymartapp.model.server.Server
 import me.rerere.polymartapp.model.server.ServerSort
 import me.rerere.polymartapp.model.user.NOT_LOGIN
@@ -30,7 +31,17 @@ class IndexViewModel @Inject constructor(
     var userInfo by mutableStateOf(NOT_LOGIN)
 
     // Resource List
-    var resourceList by mutableStateOf(emptyList<Resource>())
+    var resourceListPager = Pager(
+        PagingConfig(
+            pageSize = 18,
+            initialLoadSize = 18
+        )
+    ){
+        ResourceListSource(
+            userManager,
+            resourceRepo
+        )
+    }.flow
 
     // Server List
     var sortType by mutableStateOf(ServerSort.BUMPED)
@@ -40,21 +51,7 @@ class IndexViewModel @Inject constructor(
 
     init {
         refreshUserInfo()
-        loadResourceList()
         refreshServerList()
-    }
-
-    fun loadResourceList() {
-        viewModelScope.launch {
-            val result = resourceRepo.getResources(
-                userManager.cookie, searchResourceParams(
-
-                )
-            )
-            if(result.isSuccess()){
-                resourceList = result.value!!
-            }
-        }
     }
 
     fun refreshUserInfo() {

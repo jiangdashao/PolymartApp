@@ -3,6 +3,7 @@ package me.rerere.polymartapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -12,8 +13,10 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import com.google.accompanist.coil.LocalImageLoader
@@ -30,6 +33,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject lateinit var httpClient: OkHttpClient
 
+    @ExperimentalAnimationApi
     @ExperimentalMaterialApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +74,14 @@ class MainActivity : ComponentActivity() {
 
                             composable("index") {
                                 IndexPage(navController)
+                            }
+
+                            composable("resource/{resourceId}", arguments = listOf(
+                                navArgument("resourceId"){
+                                    type = NavType.IntType
+                                }
+                            )){
+                                ResourcePage(navController, it.arguments?.getInt("resourceId")!!)
                             }
 
                             composable("search") {

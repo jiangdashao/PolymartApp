@@ -14,6 +14,13 @@ class ResourceSearchParam {
         _params.forEach { (k, v) -> it.add(k, v) }
         it.build()
     }
+
+    fun edit(vararg paramPairs: Pair<String, String>): ResourceSearchParam {
+        paramPairs.forEach {
+            this.addParam(it.first, it.second)
+        }
+        return this
+    }
 }
 
 fun searchResourceParams(vararg paramPairs: Pair<String, String>): ResourceSearchParam {

@@ -19,7 +19,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.navArgument
 import kotlinx.coroutines.delay
 import me.rerere.polymartapp.ui.theme.POLYMART_COLOR_DARKER
 import me.rerere.polymartapp.ui.viewmodel.SplashViewModel
@@ -29,7 +28,6 @@ fun SplashPage(navController: NavController, splashViewModel: SplashViewModel = 
     // delay 2 seconds, then go to index route
     LaunchedEffect(Unit) {
         splashViewModel.checkCookie()
-
         delay(1500)
         navController.navigate("index"){
             popUpTo("splash"){

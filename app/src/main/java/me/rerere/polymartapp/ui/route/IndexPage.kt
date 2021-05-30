@@ -1,5 +1,6 @@
 package me.rerere.polymartapp.ui.route
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -42,6 +43,7 @@ import me.rerere.polymartapp.ui.viewmodel.MessageViewModel
 import me.rerere.polymartapp.util.currentVisualPage
 import me.rerere.polymartapp.util.unread
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @ExperimentalPagerApi
 @Composable
@@ -76,19 +78,28 @@ fun IndexPage(navController: NavController, indexViewModel: IndexViewModel = hil
             BottomBar(pagerState)
         }
     ) {
-        Content(it, pagerState, indexViewModel)
+        Content(it, pagerState, indexViewModel, navController)
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
-private fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexViewModel: IndexViewModel){
-    HorizontalPager(modifier = Modifier
-        .fillMaxWidth()
-        .padding(paddingValues), state = pagerState) {page->
-        when(page){
+private fun Content(
+    paddingValues: PaddingValues,
+    pagerState: PagerState,
+    indexViewModel: IndexViewModel,
+    navController: NavController
+) {
+    HorizontalPager(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(paddingValues),
+        state = pagerState
+    ) { page ->
+        when (page) {
             0 -> {
-                ResourceComp(indexViewModel)
+                ResourceComp(indexViewModel, navController)
             }
             1 -> {
                 ServerListComp(indexViewModel)
@@ -101,7 +112,12 @@ private fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexV
 }
 
 @Composable
-private fun TopBar(profilePic: String, onClickNavigationIcon: () -> Unit, onClickSearch: () -> Unit, onClickMessage: ()->Unit) {
+private fun TopBar(
+    profilePic: String,
+    onClickNavigationIcon: () -> Unit,
+    onClickSearch: () -> Unit,
+    onClickMessage: () -> Unit
+) {
     TopAppBar(
         modifier = Modifier.statusBarsPadding(),
         title = {
@@ -158,7 +174,7 @@ private fun TopBar(profilePic: String, onClickNavigationIcon: () -> Unit, onClic
 
 @ExperimentalPagerApi
 @Composable
-private fun BottomBar(pagerState: PagerState){
+private fun BottomBar(pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
     BottomNavigation(
         modifier = Modifier.navigationBarsPadding()
@@ -212,9 +228,9 @@ private fun IndexDrawer(navController: NavController, userInfo: UserInfo) {
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-            if(userInfo == NOT_LOGIN) {
+            if (userInfo == NOT_LOGIN) {
                 navController.navigate("login")
-            }else {
+            } else {
                 navController.navigate("user")
             }
         }) {

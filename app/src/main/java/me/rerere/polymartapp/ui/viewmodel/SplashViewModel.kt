@@ -1,5 +1,6 @@
 package me.rerere.polymartapp.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +20,10 @@ class SplashViewModel @Inject constructor(
     fun checkCookie() = viewModelScope.launch {
         if(userManager.cookie.notEmpty()){
             val isValid = userRepo.isValid(userManager.cookie)
-            if(isValid){
+            if(!isValid){
                 userManager.cookie = Cookie("", "")
                 userManager.saveCookie()
+                Log.i(TAG, "checkCookie: Your cookie expired!")
             }
         }
     }
