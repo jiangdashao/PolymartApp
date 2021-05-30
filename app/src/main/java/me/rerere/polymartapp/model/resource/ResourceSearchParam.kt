@@ -2,6 +2,15 @@ package me.rerere.polymartapp.model.resource
 
 import okhttp3.FormBody
 
+enum class ResourceSort(val value: String) {
+    RELEVANT("relevant"),
+    UPDATED("update"),
+    CREATED("created"),
+    EARNING("share-earnings"),
+    DOWNLOADS("downloads"),
+    RANDOM("random")
+}
+
 class ResourceSearchParam {
     private val _params: MutableMap<String, String> = mutableMapOf()
     val params: Map<String, String> = _params
