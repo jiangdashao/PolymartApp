@@ -1,4 +1,4 @@
-package me.rerere.polymartapp.model
+package me.rerere.polymartapp.model.user
 
 val NOT_LOGIN = UserInfo(-1, "Visitor", "", "Please login your account")
 

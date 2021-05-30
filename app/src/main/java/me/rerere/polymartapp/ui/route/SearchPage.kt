@@ -40,17 +40,15 @@ fun SearchPage(navController: NavController) {
 
 @Composable
 private fun TopBar(navController: NavController, onSearch: (content: String) -> Unit, onBack: ()->Unit) {
-    TopAppBar(
-        modifier = Modifier.statusBarsPadding(),
-        navigationIcon = {
+    TopAppBar(modifier = Modifier.statusBarsPadding()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack ) {
                 Icon(Icons.Default.ArrowBack, "Back")
             }
-        },
-        title = {
+
             SearchBar(onSearch)
         }
-    )
+    }
 }
 
 @Composable
@@ -76,7 +74,7 @@ private fun SearchBar(onSearch: (content: String) -> Unit) {
                         content = it
                     },
                     singleLine = true,
-                    textStyle = TextStyle.Default.copy(fontSize = 13.sp,color = Color.White),
+                    textStyle = TextStyle.Default.copy(fontSize = 14.sp,color = Color.White),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(onSearch = {
                         focusManager.clearFocus()

@@ -13,10 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,7 +30,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.buttons
-import com.vanpra.composematerialdialogs.listItemsSingleChoice
 import com.vanpra.composematerialdialogs.title
 import me.rerere.polymartapp.PolymartApp
 import me.rerere.polymartapp.R
@@ -74,7 +73,18 @@ fun ServerListComp(indexViewModel: IndexViewModel) {
     
     if(indexViewModel.serverListError){
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-            Text(text = "Error when loading server list")
+            Column(
+                modifier = Modifier
+                    .clickable {
+                        indexViewModel.refreshServerList()
+                    }
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(Icons.Default.Error, "error")
+                Text(text = "Failed to load server list")
+                Text(text = "Click to try again")
+            }
         }
     }else {
         SwipeRefresh(modifier = Modifier.fillMaxSize(), state = refreshState, onRefresh = {
@@ -126,7 +136,7 @@ private fun ServerCard(server: Server) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(vertical = 8.dp, horizontal = 16.dp),
         shape = RoundedCornerShape(4.dp),
         elevation = 8.dp
     ) {

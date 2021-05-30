@@ -3,7 +3,6 @@ package me.rerere.polymartapp.util
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
 
 class CookieJarHelper : CookieJar {
     var cookies: List<Cookie> = emptyList()
@@ -18,7 +17,7 @@ class CookieJarHelper : CookieJar {
         this.cookies = cookies
     }
 
-    fun setCookie(cookie: me.rerere.polymartapp.model.Cookie) {
+    fun setCookie(cookie: me.rerere.polymartapp.model.user.Cookie) {
         cookies = listOf(
             Cookie.Builder()
                 .name("session_token_id")
@@ -38,12 +37,15 @@ class CookieJarHelper : CookieJar {
         return nameSet.contains("session_token_id") && nameSet.contains("session_token_value")
     }
 
-    fun toCookie(): me.rerere.polymartapp.model.Cookie{
+    fun toCookie(): me.rerere.polymartapp.model.user.Cookie {
         require(containsSessionCookie())
         val map = HashMap<String, String>()
         cookies.forEach {
             map[it.name] = it.value
         }
-        return me.rerere.polymartapp.model.Cookie(map["session_token_id"], map["session_token_value"])
+        return me.rerere.polymartapp.model.user.Cookie(
+            map["session_token_id"],
+            map["session_token_value"]
+        )
     }
 }

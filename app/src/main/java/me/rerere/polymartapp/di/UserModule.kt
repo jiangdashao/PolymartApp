@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import me.rerere.polymartapp.model.UserManager
+import me.rerere.polymartapp.model.user.UserManager
 import javax.inject.Singleton
 
 @Module

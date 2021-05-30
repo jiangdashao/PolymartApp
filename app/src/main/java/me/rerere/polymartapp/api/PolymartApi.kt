@@ -1,10 +1,12 @@
 package me.rerere.polymartapp.api
 
 import me.rerere.polymartapp.api.base.ApiResult
-import me.rerere.polymartapp.model.Cookie
+import me.rerere.polymartapp.model.resource.Resource
+import me.rerere.polymartapp.model.resource.ResourceSearchParam
 import me.rerere.polymartapp.model.server.Server
-import me.rerere.polymartapp.model.UserInfo
 import me.rerere.polymartapp.model.server.ServerSort
+import me.rerere.polymartapp.model.user.Cookie
+import me.rerere.polymartapp.model.user.UserInfo
 
 interface PolymartApi {
     /**
@@ -22,6 +24,12 @@ interface PolymartApi {
      * Get user information
      */
     suspend fun getUserInfo(cookie: Cookie): ApiResult<UserInfo>
+
+
+    /**
+     * Get resource list
+     */
+    suspend fun getResourceList(cookie: Cookie, resourceSearchParam: ResourceSearchParam): ApiResult<List<Resource>>
 
     /**
      * Get server list:

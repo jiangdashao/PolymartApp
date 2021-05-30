@@ -30,10 +30,11 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import me.rerere.polymartapp.R
-import me.rerere.polymartapp.model.NOT_LOGIN
-import me.rerere.polymartapp.model.UserInfo
+import me.rerere.polymartapp.model.user.NOT_LOGIN
+import me.rerere.polymartapp.model.user.UserInfo
 import me.rerere.polymartapp.ui.component.Avatar
 import me.rerere.polymartapp.ui.route.index.ForumComp
+import me.rerere.polymartapp.ui.route.index.ResourceComp
 import me.rerere.polymartapp.ui.route.index.ServerListComp
 import me.rerere.polymartapp.ui.theme.POLYMART_COLOR_DARKER
 import me.rerere.polymartapp.ui.viewmodel.IndexViewModel
@@ -87,9 +88,7 @@ private fun Content(paddingValues: PaddingValues, pagerState: PagerState, indexV
         .padding(paddingValues), state = pagerState) {page->
         when(page){
             0 -> {
-                Box(modifier = Modifier.fillMaxSize()){
-                    Text(text = "Haha")
-                }
+                ResourceComp(indexViewModel)
             }
             1 -> {
                 ServerListComp(indexViewModel)

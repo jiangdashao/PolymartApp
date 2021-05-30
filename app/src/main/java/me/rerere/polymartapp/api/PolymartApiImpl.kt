@@ -1,12 +1,17 @@
 package me.rerere.polymartapp.api
 
+import androidx.compose.ui.graphics.Color
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.rerere.polymartapp.api.base.ApiResult
-import me.rerere.polymartapp.model.Cookie
-import me.rerere.polymartapp.model.UserInfo
+import me.rerere.polymartapp.model.resource.Resource
+import me.rerere.polymartapp.model.resource.ResourceSearchParam
+import me.rerere.polymartapp.model.resource.SearchResponse
 import me.rerere.polymartapp.model.server.Server
 import me.rerere.polymartapp.model.server.ServerSort
+import me.rerere.polymartapp.model.user.Cookie
+import me.rerere.polymartapp.model.user.UserInfo
 import me.rerere.polymartapp.util.CookieJarHelper
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -19,6 +24,8 @@ private const val TAG = "PolymartApiImpl"
 class PolymartApiImpl(
     private val httpClient: OkHttpClient
 ) : PolymartApi {
+    private val gson = Gson()
+
     override suspend fun login(username: String, password: String): ApiResult<Cookie> =
         withContext(Dispatchers.IO) {
             try {
@@ -98,6 +105,65 @@ class PolymartApiImpl(
                 ApiResult.failed()
             }
         }
+
+    override suspend fun getResourceList(
+        cookie: Cookie,
+        resourceSearchParam: ResourceSearchParam
+    ): ApiResult<List<Resource>> = withContext(Dispatchers.IO) {
+        try {
+            (httpClient.cookieJar as CookieJarHelper).setCookie(cookie)
+
+            // 首先访问 "https://polymart.org/resources", 解析出API地址
+            val authRequest = Request.Builder()
+                .url("https://polymart.org/resources")
+                .get()
+                .build()
+            val authResponse = httpClient.newCall(authRequest).execute()
+            val mainContent = Jsoup.parse(authResponse.body?.string() ?: error("empty body"))
+                .getElementById("main-content")
+            val jsPart = mainContent.child(0).child(0).html()
+            val startIndex = jsPart.indexOf("https://api.polymart.org")
+            val endIndex = jsPart.indexOf("`", startIndex)
+            val requestLink = jsPart.substring(startIndex until endIndex)
+                .replace("send_html=1&", "") // Return json data, not html
+
+            // 基于该API地址获取资源列表
+            val request = Request.Builder()
+                .url(requestLink)
+                .post(resourceSearchParam.toFormBody())
+                .build()
+            val response = httpClient.newCall(request).execute()
+            val responseObj =
+                gson.fromJson(response.body?.string() ?: "", SearchResponse::class.java)
+
+            // 将响应结果转换为列表
+            if (responseObj.response.success) {
+                return@withContext ApiResult.success(
+                    responseObj.response.result.map {
+                        Resource(
+                            it.id.toInt(),
+                            it.title,
+                            it.subtitle,
+                            it.owner.id.toInt(),
+                            it.owner.name,
+                            it.thumbnailURL,
+                            Color(("ff" + it.themeColorLight).toLong(16)),
+                            Color(("ff" + it.themeColorDark).toLong(16)),
+                            it.price,
+                            it.currency,
+                            it.version,
+                            it.totalDownloads.toInt()
+                        )
+                    }
+                )
+            }
+
+            ApiResult.failed()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            ApiResult.failed()
+        }
+    }
 
     override suspend fun getServerList(sortBy: ServerSort): ApiResult<List<Server>> =
         withContext(Dispatchers.IO) {

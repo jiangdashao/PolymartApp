@@ -1,4 +1,4 @@
-package me.rerere.polymartapp.model
+package me.rerere.polymartapp.model.user
 
 data class Cookie(
     var token_id: String?,

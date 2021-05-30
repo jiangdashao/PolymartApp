@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import me.rerere.polymartapp.model.UserManager
+import me.rerere.polymartapp.model.user.UserManager
 import me.rerere.polymartapp.repo.UserRepo
 import javax.inject.Inject
 

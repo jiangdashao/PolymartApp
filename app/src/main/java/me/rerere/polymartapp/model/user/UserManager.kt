@@ -1,4 +1,4 @@
-package me.rerere.polymartapp.model
+package me.rerere.polymartapp.model.user
 
 import android.content.Context
 import androidx.core.content.edit
@@ -25,7 +25,7 @@ object UserManager {
         }
     }
 
-    private fun loadCookieFromLocal(): Cookie{
+    private fun loadCookieFromLocal(): Cookie {
         val sharedPreferences = PolymartApp.instance.getSharedPreferences("cookie", Context.MODE_PRIVATE)
         val id = sharedPreferences.getString("id", "")
         val value = sharedPreferences.getString("value", "")

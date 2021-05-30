@@ -2,7 +2,7 @@ package me.rerere.polymartapp.repo
 
 import me.rerere.polymartapp.api.PolymartApi
 import me.rerere.polymartapp.api.base.ApiResult
-import me.rerere.polymartapp.model.Cookie
+import me.rerere.polymartapp.model.user.Cookie
 import javax.inject.Inject
 
 class UserRepo @Inject constructor(

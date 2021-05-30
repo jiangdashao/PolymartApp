@@ -6,12 +6,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.rerere.polymartapp.model.NOT_LOGIN
-import me.rerere.polymartapp.model.UserManager
+import me.rerere.polymartapp.model.resource.Resource
+import me.rerere.polymartapp.model.resource.searchResourceParams
 import me.rerere.polymartapp.model.server.Server
 import me.rerere.polymartapp.model.server.ServerSort
+import me.rerere.polymartapp.model.user.NOT_LOGIN
+import me.rerere.polymartapp.model.user.UserManager
+import me.rerere.polymartapp.repo.ResourceRepo
 import me.rerere.polymartapp.repo.ServerRepo
 import me.rerere.polymartapp.repo.UserRepo
 import javax.inject.Inject
@@ -20,11 +22,15 @@ import javax.inject.Inject
 class IndexViewModel @Inject constructor(
     private val userManager: UserManager,
     private val userRepo: UserRepo,
-    private val serverRepo: ServerRepo
+    private val serverRepo: ServerRepo,
+    private val resourceRepo: ResourceRepo
 ) : ViewModel() {
 
     // User Info
     var userInfo by mutableStateOf(NOT_LOGIN)
+
+    // Resource List
+    var resourceList by mutableStateOf(emptyList<Resource>())
 
     // Server List
     var sortType by mutableStateOf(ServerSort.BUMPED)
@@ -33,25 +39,29 @@ class IndexViewModel @Inject constructor(
     var serverList: List<Server> by mutableStateOf(emptyList())
 
     init {
-        refreshServerList()
         refreshUserInfo()
+        loadResourceList()
+        refreshServerList()
+    }
 
+    fun loadResourceList() {
         viewModelScope.launch {
-            while (true){
-                if(userInfo != userManager.userInfo) {
-                    userInfo = userManager.userInfo
-                    delay(5000)
-                }
-                delay(1000)
+            val result = resourceRepo.getResources(
+                userManager.cookie, searchResourceParams(
+
+                )
+            )
+            if(result.isSuccess()){
+                resourceList = result.value!!
             }
         }
     }
 
     fun refreshUserInfo() {
-        if(userManager.cookie.notEmpty()){
+        if (userManager.cookie.notEmpty()) {
             viewModelScope.launch {
                 val result = userRepo.getUserInfo(userManager.cookie)
-                if(result.isSuccess()){
+                if (result.isSuccess()) {
                     userManager.userInfo = result.value!!
                     userInfo = result.value!!
                 }
@@ -65,7 +75,6 @@ class IndexViewModel @Inject constructor(
         viewModelScope.launch {
             val result = serverRepo.getServerList(sortType)
             if (result.isSuccess()) {
-                serverList = emptyList()
                 serverList = result.value!!
             } else {
                 serverListError = true
