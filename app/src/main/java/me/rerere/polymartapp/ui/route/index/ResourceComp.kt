@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
@@ -42,10 +42,8 @@ import me.rerere.polymartapp.ui.viewmodel.IndexViewModel
 
 @ExperimentalAnimationApi
 @Composable
-fun ResourceComp(indexViewModel: IndexViewModel, navController: NavController) {
-    val state = indexViewModel.resourceListPager.collectAsLazyPagingItems()
-    val refreshState =
-        rememberSwipeRefreshState(isRefreshing = state.loadState.refresh == LoadState.Loading)
+fun ResourceComp(indexViewModel: IndexViewModel, navController: NavController, state: LazyPagingItems<Resource>) {
+    val refreshState = rememberSwipeRefreshState(isRefreshing = state.loadState.refresh == LoadState.Loading)
     val scaffoldState = rememberScaffoldState()
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()

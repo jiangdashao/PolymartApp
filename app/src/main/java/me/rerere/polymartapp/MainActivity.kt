@@ -84,10 +84,6 @@ class MainActivity : ComponentActivity() {
                                 ResourcePage(navController, it.arguments?.getInt("resourceId")!!)
                             }
 
-                            composable("search") {
-                                SearchPage(navController)
-                            }
-
                             composable("login") {
                                 LoginPage(navController)
                             }

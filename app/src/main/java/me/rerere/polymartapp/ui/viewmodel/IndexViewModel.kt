@@ -33,6 +33,10 @@ class IndexViewModel @Inject constructor(
     // User Info
     var userInfo by mutableStateOf(NOT_LOGIN)
 
+    // Search
+    var query by mutableStateOf("")
+    var isSearching by mutableStateOf(false)
+
     // Resource List
     var resourceSort = MutableLiveData(ResourceSort.UPDATED)
     private val resourceSearchParam = searchResourceParams("host" to "polymart.org", "sort" to resourceSort.value!!.value)
@@ -55,6 +59,12 @@ class IndexViewModel @Inject constructor(
         resourceSearchParam.edit("sort" to resourceSort.value)
     }
 
+    fun search(query: String){
+        this.query = query
+        resourceSearchParam.edit(
+            "query" to query
+        )
+    }
 
     // Server List
     var sortType by mutableStateOf(ServerSort.BUMPED)
