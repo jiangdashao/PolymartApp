@@ -351,7 +351,7 @@ private fun IndexDrawer(navController: NavController, userInfo: UserInfo) {
                 contentAlignment = Alignment.Center
             ) {
                 val painter = rememberCoilPainter(request = userInfo.profilePic)
-                Image(painter = painter, contentDescription = null)
+                Image(modifier = Modifier.fillMaxSize(), painter = painter, contentDescription = null)
                 when (painter.loadState) {
                     is ImageLoadState.Loading -> {
                         CircularProgressIndicator(

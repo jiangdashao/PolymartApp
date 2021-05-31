@@ -120,14 +120,14 @@ class PolymartApiImpl(
                 .get()
                 .build()
             val authResponse = httpClient.newCall(authRequest).await()
-            val mainContent = Jsoup.parse(authResponse.body?.string() ?: error("empty body"))
+            val authBody = authResponse.body?.string() ?: error("empty response")
+            val mainContent = Jsoup.parse(authBody)
                 .getElementById("main-content")
             val jsPart = mainContent.child(0).child(0).html()
             val startIndex = jsPart.indexOf("https://api.polymart.org")
             val endIndex = jsPart.indexOf("`", startIndex)
             val requestLink = jsPart.substring(startIndex until endIndex)
-                .replace("send_html=1&", "") // Return json data, not html
-
+                .replace("send_html=1", "send_html=0") // Return json data, not html
             // 基于该API地址获取资源列表
             val request = Request.Builder()
                 .url(requestLink)
@@ -153,7 +153,10 @@ class PolymartApiImpl(
                             it.price,
                             it.currency,
                             it.version,
-                            it.totalDownloads.toInt()
+                            it.supportedMinecraftVersions,
+                            it.supportedServerSoftware,
+                            it.totalDownloads.toInt(),
+                            it.canDownload
                         )
                     }
                 )

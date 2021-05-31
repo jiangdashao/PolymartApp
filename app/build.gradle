@@ -85,6 +85,8 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets:$acc_version"
     // Coil
     implementation "com.google.accompanist:accompanist-coil:$acc_version"
+    // Flow
+    implementation "com.google.accompanist:accompanist-flowlayout:$acc_version"
 
     // Retrofit
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'

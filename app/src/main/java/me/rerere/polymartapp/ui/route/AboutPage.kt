@@ -10,7 +10,8 @@ fun AboutPage(navController: NavController){
     Scaffold(
         topBar = {
             BasicNavTopBar(navController, "About")
-        }
+        },
+
     ) {
 
     }

@@ -23,11 +23,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -38,12 +40,18 @@ import kotlinx.coroutines.launch
 import me.rerere.polymartapp.R
 import me.rerere.polymartapp.model.resource.Resource
 import me.rerere.polymartapp.model.resource.ResourceSort
+import me.rerere.polymartapp.ui.component.OutlinedBox
 import me.rerere.polymartapp.ui.viewmodel.IndexViewModel
 
 @ExperimentalAnimationApi
 @Composable
-fun ResourceComp(indexViewModel: IndexViewModel, navController: NavController, state: LazyPagingItems<Resource>) {
-    val refreshState = rememberSwipeRefreshState(isRefreshing = state.loadState.refresh == LoadState.Loading)
+fun ResourceComp(
+    indexViewModel: IndexViewModel,
+    navController: NavController,
+    state: LazyPagingItems<Resource>
+) {
+    val refreshState =
+        rememberSwipeRefreshState(isRefreshing = state.loadState.refresh == LoadState.Loading)
     val scaffoldState = rememberScaffoldState()
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -97,7 +105,8 @@ fun ResourceComp(indexViewModel: IndexViewModel, navController: NavController, s
         if (state.loadState.refresh is LoadState.Error) {
             Box(modifier = Modifier
                 .fillMaxSize()
-                .clickable { state.refresh() }, contentAlignment = Alignment.Center){
+                .clickable { state.refresh() }, contentAlignment = Alignment.Center
+            ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = "Failed to load resource list")
                     Text(text = "Click to try again")
@@ -189,6 +198,32 @@ private fun ResourceCard(resource: Resource, onClick: () -> Unit) {
                 // Subtitle
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     Text(text = resource.subtitle)
+                }
+
+                // Spacer
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                )
+
+                // Support Version
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    OutlinedBox(borderColor = resource.getThemeColorAuto()) {
+                        Text(text = "Version: ${resource.version}", fontSize = 10.sp, maxLines = 1)
+                    }
+
+                    OutlinedBox(borderColor = resource.getThemeColorAuto()) {
+                        Text(text = "Minecraft: ${resource.supportServerVersion}", fontSize = 10.sp, maxLines = 1)
+                    }
+
+                    if(resource.supportServerSoftware != null){
+                        OutlinedBox(borderColor = resource.getThemeColorAuto()) {
+                            Text(text = "Minecraft: ${resource.supportServerSoftware}", fontSize = 10.sp, maxLines = 1)
+                        }
+                    }
                 }
 
                 // Spacer
